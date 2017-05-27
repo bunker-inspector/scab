@@ -5,7 +5,7 @@ import org.reflections.Reflections
 import slack.api.{BlockingSlackApiClient, SlackApiClient}
 import slack.models.{Message, User}
 import slack.rtm.{RtmState, SlackRtmClient}
-import slackbot.command.{MessageHandlerLoader, SlackBotMessageHandler}
+import slackbot.handler.{MessageHandlerLoader, SlackBotMessageHandler}
 
 import scala.collection.parallel.ParSeq
 

@@ -1,4 +1,4 @@
-package slackbot.command
+package slackbot.handler
 
 import org.reflections.Reflections
 

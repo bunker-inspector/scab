@@ -1,4 +1,4 @@
-package slackbot.command;
+package slackbot.handler;
 
 import scala.Tuple2;
 import scala.Tuple3;
