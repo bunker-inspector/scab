@@ -34,8 +34,6 @@ class SlackBot(val apiToken: String) {
       close()
     }
 
-    println("HERE!")
-
     dispatchMessage(message)
   })
 
