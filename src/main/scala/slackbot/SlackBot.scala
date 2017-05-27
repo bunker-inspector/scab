@@ -6,7 +6,6 @@ import slack.api.{BlockingSlackApiClient, SlackApiClient}
 import slack.models.{Message, User}
 import slack.rtm.{RtmState, SlackRtmClient}
 import slackbot.handler.{MessageHandlerLoader, SlackBotMessageHandler}
-
 import scala.collection.parallel.ParSeq
 
 class SlackBot(val apiToken: String) {
