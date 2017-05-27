@@ -10,6 +10,6 @@ import slack.models.Message
 class ScalaDemoHandler extends SlackBotMessageHandler {
   override def handleMessage(message: Message, channels: List[String],
                              users: List[(String, String)]): (lang.Boolean, String, String) = {
-    return (false, message.channel, s"${message.text}APPENDED")
+    return (true, message.channel, "Scala handler is live!")
   }
 }

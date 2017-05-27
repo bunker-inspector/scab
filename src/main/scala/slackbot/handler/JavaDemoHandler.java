@@ -8,6 +8,6 @@ import slack.models.Message;
 class JavaDemoHandler implements SlackBotMessageHandler {
     @Override
     public Tuple3<Boolean, String, String> handleMessage(Message message, List<String> channels, List<Tuple2<String, String>> users) {
-        return new Tuple3<>(false, message.channel(), message.text());
+        return new Tuple3<>(true, message.channel(), "Java demo is live!");
     }
 }
