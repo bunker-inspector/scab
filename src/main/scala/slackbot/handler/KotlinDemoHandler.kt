@@ -11,6 +11,6 @@ import slack.models.Message
  */
 class KotlinDemoHandler : SlackBotMessageHandler {
     override fun handleMessage(message: Message?, channels: Map<String, String>?, users: Map<String, String>?): Tuple3<Boolean, String, String> {
-            return Tuple3(true, message!!.channel(), "Kotlin handler is live!")
+            return Tuple3(false, message!!.channel(), "Kotlin handler is live!")
     }
 }

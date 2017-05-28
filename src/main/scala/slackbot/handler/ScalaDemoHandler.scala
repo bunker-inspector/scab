@@ -1,6 +1,6 @@
 package slackbot.handler
 
-import java.lang
+import java.lang.Boolean
 
 import slack.models.Message
 
@@ -9,7 +9,7 @@ import slack.models.Message
   */
 class ScalaDemoHandler extends SlackBotMessageHandler {
   override def handleMessage(message: Message, channels: Map[String, String],
-                             users: Map[String, String]): (lang.Boolean, String, String) = {
-    return (true, message.channel, "Scala handler is live!")
+                             users: Map[String, String]): (Boolean, String, String) = {
+    return (false, message.channel, "Scala handler is live!")
   }
 }

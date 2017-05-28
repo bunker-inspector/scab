@@ -10,6 +10,6 @@ import slackbot.handler.SlackBotMessageHandler
 class GroovyDemoHandler implements SlackBotMessageHandler {
     @Override
     Tuple3<Boolean, String, String> handleMessage(Message message, Map<String, String> channels, Map<String, String> users) {
-        return new Tuple3<Boolean, String, String>(true, message.channel(), "Groovy handler is live!")
+        return new Tuple3<Boolean, String, String>(false, message.channel(), "Groovy handler is live!")
     }
 }

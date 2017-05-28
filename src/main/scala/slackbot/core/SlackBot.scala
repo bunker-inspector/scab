@@ -22,6 +22,7 @@ class SlackBot(val apiToken: String) {
   private val channelControllers: RtmState = rtmClient.state
   private var handlerQueues: ParSeq[MessageQueue] = ParSeq()
   private val loader = new MessageHandlerLoader()
+  private var map: Map[String, Long] = Map()
 
   reloadHandlers()
 
