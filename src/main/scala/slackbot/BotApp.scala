@@ -1,5 +1,7 @@
 package slackbot
 
+import slackbot.core.SlackBot
+
 /**
   * Created by tkassen on 5/26/17.
   */
