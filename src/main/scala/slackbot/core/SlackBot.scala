@@ -46,12 +46,15 @@ class SlackBot(val apiToken: String) {
   }
 
   rtmClient.onMessage(message => {
-    if (message.text.trim() == "QUIT") {
-      println("Exiting!")
-      close()
-    }
+    if (message.text.trim().length > 0) {
+      if (message.text.trim() == "QUIT") {
+        rtmClient.sendMessage(message.channel, "Shutting down...")
+        println("Exiting!")
+        close()
+      }
 
-    dispatchMessage(message)
+      dispatchMessage(message)
+    }
   })
 
   def dispatchMessage(message: Message): Unit = {
