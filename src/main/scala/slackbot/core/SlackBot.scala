@@ -45,7 +45,6 @@ class SlackBot(val apiToken: String) {
     })
   }
 
-
   rtmClient.onMessage(message => {
     if (message.text.trim() == "QUIT") {
       println("Exiting!")
