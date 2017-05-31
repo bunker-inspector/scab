@@ -27,15 +27,14 @@ public class MockingHandler implements SlackBotMessageHandler {
 
         Random r = new Random();
         String text = message.text();
-        String mockingMessage;
 
         if (r.nextInt(50) == 0) {
-            mockingMessage = Arrays.stream(text.split(" "))
+            String mockingMessage = Arrays.stream(text.split(" "))
                     .map(MockingHandler::toMocking)
                     .reduce(new String(),
                             (a, b) -> a + ' ' + b);
+            return new Tuple3<>(true, message.channel(), mockingMessage + '\n' + MOCKING_IMG_URL);
         }
-
-        return new Tuple3<>(true, message.channel(), mockingMessage + '\n' + MOCKING_IMG_URL);
+        return noMessage();
     }
 }

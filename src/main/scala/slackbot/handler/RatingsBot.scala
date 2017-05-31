@@ -30,6 +30,6 @@ class RatingsBot extends SlackBotMessageHandler {
       }
       return (send, message.channel.toString, s"$token has $currentScore points.")
     }
-    return (false, "", "")
+    return noMessage()
   }
 }

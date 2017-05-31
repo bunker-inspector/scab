@@ -29,6 +29,6 @@ class ProxyHandler extends SlackBotMessageHandler {
         }
       }
     }
-    (false, null, null)
+    noMessage()
   }
 }
