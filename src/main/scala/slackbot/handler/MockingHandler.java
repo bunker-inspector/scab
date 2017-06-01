@@ -10,7 +10,7 @@ import java.util.Random;
 /**
  * Created by tkassen on 5/28/17.
  */
-public class MockingHandler implements SlackBotMessageHandler {
+public class MockingHandler implements SlackbotMessageHandler {
     private static final String MOCKING_IMG_URL = "http://i2.kym-cdn.com/photos/images/facebook/001/255/479/85b.png";
 
     private static String toMocking(String notMocking) {

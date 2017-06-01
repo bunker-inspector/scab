@@ -1,14 +1,13 @@
-package slackbot.handler.message
+package slackbot.handler
 
 import java.lang.Boolean
 
 import slack.models.Message
-import slackbot.handler.SlackBotMessageHandler
 
 /**
   * Created by tkassen on 5/27/17.
   */
-class ScalaDemoHandler extends SlackBotMessageHandler {
+class ScalaDemoHandler extends SlackbotMessageHandler {
   override def handleMessage(message: Message, channels: Map[String, String],
                              users: Map[String, String]): (Boolean, String, String) = {
     return (false, message.channel, "Scala handler is live!")

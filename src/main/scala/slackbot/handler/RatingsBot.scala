@@ -1,14 +1,14 @@
-package slackbot.handler.message
+package slackbot.handler
 
 import java.lang.Boolean
 
 import slack.models.Message
-import slackbot.handler.SlackBotMessageHandler
+import slackbot.handler.SlackbotMessageHandler
 
 /**
   * Created by tkassen on 5/27/17.
   */
-class RatingsBot extends SlackBotMessageHandler {
+class RatingsBot extends SlackbotMessageHandler {
   private var ratings: Map[String, Int] = Map()
 
   override def handleMessage(message: Message, channels: Map[String, String],

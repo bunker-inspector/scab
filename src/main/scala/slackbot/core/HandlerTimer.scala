@@ -1,16 +1,16 @@
 package slackbot.core
 
 import slack.rtm.SlackRtmClient
-import slackbot.handler.SlackBotTimedHandler
+import slackbot.handler.SlackbotTimedHandler
 
 /**
   * Created by tkassen on 5/31/17.
   */
-class HandlerTimer(h: SlackBotTimedHandler, r: SlackRtmClient, c: Map[String, String], u: Map[String, String]) {
+class HandlerTimer(h: SlackbotTimedHandler, r: SlackRtmClient, c: Map[String, String], u: Map[String, String]) {
 
-  private val FALLBACK_TIMEOUT: Long = 5000;
+  private val FALLBACK_TIMEOUT: Long = 60000;
 
-  private val handler: SlackBotTimedHandler = h
+  private val handler: SlackbotTimedHandler = h
   private var alive: Boolean = true
   private val rtmClient: SlackRtmClient = r
   private val channels: Map[String, String] = c

@@ -1,8 +1,8 @@
-package slackbot.handler.message
+package slackbot.handler
 import java.lang
 
 import slack.models.Message
-import slackbot.handler.SlackBotMessageHandler
+import slackbot.handler.SlackbotMessageHandler
 
 
 //Me U2RK824GK
@@ -13,7 +13,7 @@ import slackbot.handler.SlackBotMessageHandler
 /**
   * Created by tkassen on 5/27/17.
   */
-class ProxyHandler extends SlackBotMessageHandler {
+class ProxyHandler extends SlackbotMessageHandler {
   override def handleMessage(message: Message, channels: Map[String, String], users: Map[String, String]): (lang.Boolean, String, String) = {
     val tokens: Seq[String] = message.text.split(" ").map(_.trim)
 
