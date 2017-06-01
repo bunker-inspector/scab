@@ -1,7 +1,8 @@
-package slackbot.handler
+package slackbot.handler.message
 import java.lang
 
 import slack.models.Message
+import slackbot.handler.SlackBotMessageHandler
 
 
 //Me U2RK824GK

@@ -1,11 +1,8 @@
 package slackbot.handler
 
-import scala.Tuple2
 import scala.Tuple3
-import scala.collection.immutable.List
 import scala.collection.immutable.Map
 import slack.models.Message
-import slackbot.handler.SlackBotMessageHandler
 
 class GroovyDemoHandler implements SlackBotMessageHandler {
     @Override

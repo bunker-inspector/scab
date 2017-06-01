@@ -1,14 +1,16 @@
 package slackbot.core
 
 import akka.actor.ActorSystem
-import akka.actor.Status.Success
 import slack.api.{BlockingSlackApiClient, SlackApiClient}
 import slack.models.Message
 import slack.rtm.{RtmState, SlackRtmClient}
-import slackbot.handler.{MessageHandlerLoader, SlackBotMessageHandler}
+import slackbot.handler.{HandlerLoader, SlackBotMessageHandler, SlackBotTimedHandler}
+import slackbot.handler.SlackBotMessageHandler
 
 import scala.collection.parallel.ParSeq
 import scala.concurrent.Future
+import scala.reflect.ClassTag
+import scala.util.Try
 
 class SlackBot(val apiToken: String) {
   implicit val system = ActorSystem("slack")
@@ -20,8 +22,9 @@ class SlackBot(val apiToken: String) {
   private val users: Map[String, String] = blockingClient.listUsers().map(user => (user.name, user.id)).toMap[String, String]
   private val rtmClient: SlackRtmClient = SlackRtmClient(apiToken)
   private val channelControllers: RtmState = rtmClient.state
-  private var handlerQueues: ParSeq[MessageQueue] = ParSeq()
-  private val loader = new MessageHandlerLoader()
+  private var messageHandlerQueues: ParSeq[MessageQueue] = ParSeq()
+  private var timedHandlers: ParSeq[HandlerTimer] = ParSeq()
+  private val loader = new HandlerLoader()
   private var map: Map[String, Long] = Map()
 
   reloadHandlers()
@@ -29,20 +32,19 @@ class SlackBot(val apiToken: String) {
   def reloadHandlers(): Unit = {
     stopHandlers()
 
-    handlerQueues = loader
-      .loadHandlers()
+    messageHandlerQueues = loader
+      .loadHandlers[SlackBotMessageHandler]
       .map(handler => new MessageQueue(handler, rtmClient, channels, users))
       .par
 
-    Future[Boolean](handlerQueues.forall(_.start())).onComplete[Unit](result => {
-      val allExitedCorrectly: Boolean = result.getOrElse(false)
-      if (!allExitedCorrectly) {
-        throw new Exception("Not all handlers exited correctly")
-      }
-      else {
-        println("All handlers exited correctly...")
-      }
-    })
+    Future[Boolean](messageHandlerQueues.forall(_.start())).onComplete[Unit](runHandlers)
+
+    timedHandlers = loader
+      .loadHandlers[SlackBotTimedHandler]
+      .map(handler => new HandlerTimer(handler, rtmClient, channels, users))
+      .par
+
+    Future[Boolean](timedHandlers.forall(_.start())).onComplete[Unit](runHandlers)
   }
 
   rtmClient.onMessage(message => {
@@ -57,12 +59,22 @@ class SlackBot(val apiToken: String) {
     }
   })
 
+  def runHandlers(result: Try[Boolean]): Unit = {
+      val allExitedCorrectly: Boolean = result.getOrElse(false)
+      if (!allExitedCorrectly) {
+        throw new Exception("Not all handlers exited correctly")
+      }
+      else {
+        println("All handlers exited correctly...")
+      }
+  }
+
   def dispatchMessage(message: Message): Unit = {
-    handlerQueues.foreach(handlerQueue => handlerQueue.enqueue(message))
+    messageHandlerQueues.foreach(handlerQueue => handlerQueue.enqueue(message))
   }
 
   private def stopHandlers(): Unit = {
-    for (handleQueue <- handlerQueues) { handleQueue.shutdown() }
+    for (handleQueue <- messageHandlerQueues) { handleQueue.shutdown() }
   }
 
   def close(): Unit = {

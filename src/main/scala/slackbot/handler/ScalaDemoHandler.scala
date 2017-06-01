@@ -1,8 +1,9 @@
-package slackbot.handler
+package slackbot.handler.message
 
 import java.lang.Boolean
 
 import slack.models.Message
+import slackbot.handler.SlackBotMessageHandler
 
 /**
   * Created by tkassen on 5/27/17.
