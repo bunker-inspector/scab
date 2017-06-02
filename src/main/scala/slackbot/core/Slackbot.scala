@@ -21,11 +21,10 @@ class Slackbot(val apiToken: String) {
   private val channels: Map[String, String] = blockingClient.listChannels().map(channel => (channel.name, channel.id)).toMap[String, String]
   private val users: Map[String, String] = blockingClient.listUsers().map(user => (user.name, user.id)).toMap[String, String]
   private val rtmClient: SlackRtmClient = SlackRtmClient(apiToken)
-  private val channelControllers: RtmState = rtmClient.state
   private var messageHandlerQueues: ParSeq[MessageQueue] = ParSeq()
   private var timedHandlers: ParSeq[HandlerTimer] = ParSeq()
   private val loader = new HandlerLoader()
-  private var map: Map[String, Long] = Map()
+  private val selfId: String = rtmClient.getState().self.id
 
   reloadHandlers()
 
@@ -35,7 +34,7 @@ class Slackbot(val apiToken: String) {
     messageHandlerQueues = loader
       .loadHandlers[SlackbotMessageHandler]
       .map(handler => {
-        handler.onInit(db.getHandlerData (handler.getClass.getName))
+        handler.onInit(db.getHandlerData(handler.getClass.getName))
         new MessageQueue(handler, rtmClient, channels, users)
       })
       .par
@@ -54,15 +53,20 @@ class Slackbot(val apiToken: String) {
   }
 
   rtmClient.onMessage(message => {
-    if (message.text.trim().length > 0) {
-      if (message.text.trim() == "QUIT") {
+    println(s"Got message: '${message.text}' in ${message.channel} sent by ${message.user}")
 
+    if (message.text.trim().length > 0) {
+      if (message.text.trim() == s"<@${selfId}> QUIT") {
         rtmClient.sendMessage(message.channel, "Shutting down...")
         println("Exiting!")
         close()
+      } else if (message.text.trim() == s"<@${selfId}> RELOAD") {
+        rtmClient.sendMessage(message.channel, "Reloading handlers...")
+        println("Reloading handlers...")
+        reloadHandlers()
+      } else {
+        dispatchMessage(message)
       }
-
-      dispatchMessage(message)
     }
   })
 
