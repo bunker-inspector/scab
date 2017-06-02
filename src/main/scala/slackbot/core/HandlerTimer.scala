@@ -28,9 +28,15 @@ class HandlerTimer(h: SlackbotTimedHandler, r: SlackRtmClient, c: Map[String, St
   def start(): Boolean = {
     try {
       while (alive) {
-        val response = handler.handleTimeout(channels, users)
+        try {
+          val response = handler.handleTimeout(channels, users)
 
-        if (response._1) rtmClient.sendMessage(response._2, response._3)
+          if (response._1)
+            rtmClient.sendMessage(response._2, response._3)
+
+        } catch {
+          case Exception => println(s"There was an error processing the timeout for handler ${handler.getClass.getName}")
+        }
 
         Thread.sleep(handler.getNextEventTimeout.orElse(FALLBACK_TIMEOUT))
       }

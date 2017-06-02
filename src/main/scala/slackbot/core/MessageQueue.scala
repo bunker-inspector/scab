@@ -39,13 +39,20 @@ class MessageQueue(h: SlackbotMessageHandler, r: SlackRtmClient,
     try {
       while (alive) {
         queue.dequeueFirst(message => {
-          val response = handler.handleMessage(message, channels, users)
+          try {
+            val response = handler.handleMessage(message, channels, users)
 
-          if (response._1) {
-            rtmClient.sendMessage(response._2, response._3)
+            if (response._1) {
+              rtmClient.sendMessage(response._2, response._3)
+            }
+
+            true
+          } catch {
+            case Exception => {
+              rtmClient.sendMessage(message.channel, "There was an error processing your request...")
+              false
+            }
           }
-
-          true
         })
         Thread.sleep(DEQUE_TIMOUT_MS)
       }
