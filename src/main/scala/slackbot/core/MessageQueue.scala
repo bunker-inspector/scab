@@ -1,5 +1,6 @@
 package slackbot.core
 
+import io.circe.Json
 import slack.models.{Channel, Message}
 import slack.rtm.SlackRtmClient
 import slackbot.handler.SlackbotMessageHandler
@@ -11,7 +12,8 @@ import scala.util.parsing.json.JSONObject
 /**
   * Created by tkassen on 5/27/17.
   */
-class MessageQueue(h: SlackbotMessageHandler, r: SlackRtmClient, c: Map[String, String], u: Map[String, String]) {
+class MessageQueue(h: SlackbotMessageHandler, r: SlackRtmClient,
+                   c: Map[String, String], u: Map[String, String]) {
   private final val DEQUE_TIMOUT_MS: Long = 100
 
   private val handler: SlackbotMessageHandler = h
@@ -22,11 +24,11 @@ class MessageQueue(h: SlackbotMessageHandler, r: SlackRtmClient, c: Map[String, 
   private val users: Map[String, String] = u
 
   def getWrappingClassName(): String = {
-    return handler.getClass.getName
+    handler.getClass.getName
   }
 
-  def getData(): JSONObject = {
-    return handler.getData()
+  def getSaveData(): Json = {
+      handler.onSaveRequest()
   }
 
   def enqueue(message: Message): Unit = {

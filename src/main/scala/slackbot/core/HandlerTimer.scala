@@ -1,5 +1,6 @@
 package slackbot.core
 
+import io.circe.Json
 import slack.rtm.SlackRtmClient
 import slackbot.handler.SlackbotTimedHandler
 
@@ -15,6 +16,14 @@ class HandlerTimer(h: SlackbotTimedHandler, r: SlackRtmClient, c: Map[String, St
   private val rtmClient: SlackRtmClient = r
   private val channels: Map[String, String] = c
   private val users: Map[String, String] = u
+
+  def getWrappingClassName(): String = {
+    handler.getClass.getName
+  }
+
+  def getSaveData(): Json = {
+    handler.onSaveRequest()
+  }
 
   def start(): Boolean = {
     try {

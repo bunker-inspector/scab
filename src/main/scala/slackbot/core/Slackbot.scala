@@ -1,7 +1,7 @@
 package slackbot.core
 
 import akka.actor.ActorSystem
-import org.hamcrest.core.IsAnything
+import io.circe.Json
 import slack.api.{BlockingSlackApiClient, SlackApiClient}
 import slack.models.Message
 import slack.rtm.{RtmState, SlackRtmClient}
@@ -15,7 +15,7 @@ class Slackbot(val apiToken: String) {
   implicit val system = ActorSystem("slack")
   implicit val ec = system.dispatcher
 
-  private val db: SlackbotDatabaseManager = new SlackbotDatabaseManager()
+  private val db: SlackbotDataManager = new SlackbotDataManager()
   private val blockingClient: BlockingSlackApiClient = BlockingSlackApiClient(apiToken)
   private val asyncClient: SlackApiClient = SlackApiClient(apiToken)
   private val channels: Map[String, String] = blockingClient.listChannels().map(channel => (channel.name, channel.id)).toMap[String, String]
@@ -34,14 +34,20 @@ class Slackbot(val apiToken: String) {
 
     messageHandlerQueues = loader
       .loadHandlers[SlackbotMessageHandler]
-      .map(handler => new MessageQueue(handler, rtmClient, channels, users))
+      .map(handler => {
+        handler.onInit(db.getHandlerData (handler.getClass.getName))
+        new MessageQueue(handler, rtmClient, channels, users)
+      })
       .par
 
     Future[Boolean](messageHandlerQueues.forall(_.start())).onComplete[Unit](runHandlers)
 
     timedHandlers = loader
       .loadHandlers[SlackbotTimedHandler]
-      .map(handler => new HandlerTimer(handler, rtmClient, channels, users))
+      .map(handler => {
+        handler.onInit(db.getHandlerData(handler.getClass.getName))
+        new HandlerTimer(handler, rtmClient, channels, users)
+      })
       .par
 
     Future[Boolean](timedHandlers.forall(_.start())).onComplete[Unit](runHandlers)
@@ -80,8 +86,9 @@ class Slackbot(val apiToken: String) {
   }
 
   private def saveHandlerData(): Unit = {
-    var toSave: Map[String, Map[String, Any]] = Map()
-
+    db.saveHandlerData(
+      Map[String, Json](messageHandlerQueues.seq map { queue => queue.getWrappingClassName -> queue.getSaveData}: _*)
+      ++ Map[String, Json](timedHandlers.seq map { timer => timer.getWrappingClassName -> timer.getSaveData}: _*))
   }
 
   def close(): Unit = {

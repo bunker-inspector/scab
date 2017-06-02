@@ -1,7 +1,8 @@
 package slackbot.handler;
 
+import io.circe.Json;
+import io.circe.JsonObject;
 import scala.Tuple3;
-import scala.collection.immutable.HashMap;
 import scala.collection.immutable.Map;
 import scala.util.parsing.json.JSONObject;
 import slack.models.Message;
@@ -16,12 +17,12 @@ public interface SlackbotMessageHandler {
         return new Tuple3<>(false, null, null);
     }
 
-    default void onInit(JSONObject data) {
+    default void onInit(Json data) {
 
     }
 
-    default JSONObject getData() {
-        return new JSONObject(new HashMap<>());
+    default Json onSaveRequest() {
+        return Json.fromJsonObject(JsonObject.empty());
     }
 
     Tuple3<Boolean, String, String> handleMessage(Message message, Map<String, String> channels, Map<String, String> users);

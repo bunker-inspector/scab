@@ -2,14 +2,22 @@ package slackbot.handler
 
 import java.lang.Boolean
 
+import io.circe.{Json, JsonNumber, JsonObject}
 import slack.models.Message
-import slackbot.handler.SlackbotMessageHandler
 
 /**
   * Created by tkassen on 5/27/17.
   */
 class RatingsBot extends SlackbotMessageHandler {
-  private var ratings: Map[String, Int] = Map()
+  private var ratings: Map[String, Json] = null
+
+  override def onInit(data: Json): Unit = {
+    ratings = data.asObject.getOrElse(JsonObject.empty).toMap
+  }
+
+  override def onSaveRequest(): Json = {
+    Json.fromJsonObject(JsonObject.fromMap(ratings))
+  }
 
   override def handleMessage(message: Message, channels: Map[String, String],
                              users: Map[String, String]): (Boolean, String, String) = {
@@ -21,12 +29,12 @@ class RatingsBot extends SlackbotMessageHandler {
 
       val token: String = text.substring(2)
       if (text.startsWith("++")) {
-        currentScore = ratings.getOrElse(token, 0) + 1
-        ratings += (token -> currentScore)
+        currentScore = ratings.getOrElse(token, Json.fromInt(0)).as[Int].getOrElse(0) + 1
+        ratings += (token -> Json.fromInt(currentScore))
         send = true
       } else if (text.startsWith("--")) {
-        currentScore = ratings.getOrElse(token, 0) - 1
-        ratings += (token -> currentScore)
+        currentScore = ratings.getOrElse(token, Json.fromInt(0)).as[Int].getOrElse(0) - 1
+        ratings += (token -> Json.fromInt(currentScore))
         send = true
       }
       return (send, message.channel.toString, s"$token has $currentScore points.")

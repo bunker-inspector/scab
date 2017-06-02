@@ -1,0 +1,27 @@
+{
+  "slackbot.handler.ProxyHandler" : {
+    
+  },
+  "slackbot.handler.JavaDemoHandler" : {
+    
+  },
+  "slackbot.handler.ExampleTimerHandler" : {
+    
+  },
+  "slackbot.handler.GroovyDemoHandler" : {
+    
+  },
+  "slackbot.handler.KotlinDemoHandler" : {
+    
+  },
+  "slackbot.handler.ScalaDemoHandler" : {
+    
+  },
+  "slackbot.handler.RatingsBot" : {
+    "dogs" : 3,
+    "dan" : 1
+  },
+  "slackbot.handler.MockingHandler" : {
+    
+  }
+}
