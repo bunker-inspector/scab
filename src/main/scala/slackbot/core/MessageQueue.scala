@@ -48,7 +48,7 @@ class MessageQueue(h: SlackbotMessageHandler, r: SlackRtmClient,
 
             true
           } catch {
-            case Exception => {
+            case e: Exception => {
               rtmClient.sendMessage(message.channel, "There was an error processing your request...")
               false
             }
