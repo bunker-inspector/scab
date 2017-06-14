@@ -8,6 +8,9 @@
   "slackbot.handler.ExampleTimerHandler" : {
     
   },
+  "slackbot.handler.SubredditLinkHandler" : {
+    
+  },
   "slackbot.handler.GroovyDemoHandler" : {
     
   },
