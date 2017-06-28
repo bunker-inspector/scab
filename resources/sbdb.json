@@ -22,7 +22,8 @@
   },
   "slackbot.handler.RatingsBot" : {
     "dogs" : 3,
-    "dan" : 1
+    "dan" : 1,
+    "peanuts" : 1
   },
   "slackbot.handler.MockingHandler" : {
     

@@ -23,7 +23,14 @@ class RatingsBot extends SlackbotMessageHandler {
                              users: Map[String, String]): (Boolean, String, String) = {
     val text: String = message.text.toLowerCase.trim
 
-    if (text.split(" ").size == 1) {
+    if (text.equals("!scoreboard")) {
+      val scores: String = ratings
+        .foldLeft[List[String]](List[String]()) { (acc, elem) =>  s"${elem._1} : ${elem._2.asNumber.getOrElse(0)}" :: acc }
+        .mkString("\n")
+
+      return (scores.length > 0, message.channel, scores)
+    }
+    else if (text.split(" ").size == 1) {
       var currentScore: Int = 0
       var send: Boolean = false
 
@@ -39,6 +46,7 @@ class RatingsBot extends SlackbotMessageHandler {
       }
       return (send, message.channel.toString, s"$token has $currentScore points.")
     }
+
     return noMessage()
   }
 }
