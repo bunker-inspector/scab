@@ -17,3 +17,5 @@ libraryDependencies ++= Seq(
   "io.circe" %% "circe-generic",
   "io.circe" %% "circe-parser"
 ).map(_ % circeVersion)
+
+enablePlugins(JavaAppPackaging)
